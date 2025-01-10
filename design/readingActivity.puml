@@ -1,0 +1,51 @@
+@startuml
+title "User Gets a Tarot Reading (Full Activity Diagram)"
+
+start
+
+:User enters Intention;
+
+' Decision: Validate the user intention
+if (Is Intention Valid?) then (Yes)
+  :Generate Tarot Spread;
+
+  ' Loop for multiple spreads
+  repeat
+    :Select or Generate Next Spread;
+  repeat while (More spreads?) is (Yes)
+
+  ' Parallel retrieval for social media context
+  fork
+    :Retrieve context from LinkedIn (RAG1);
+  fork again
+    :Retrieve context from Twitter (RAG2);
+  fork again
+    :Retrieve context from Hacker News (RAG3);
+  end fork
+
+  :Merge all social media snippets;
+  :Build Final Prompt;
+
+  :Send prompt to AI (Local/Remote/In-browser);
+
+  ' Decision: Did the AI call fail?
+  if (AI service error?) then (Yes)
+    :Log/Display Error to User;
+    stop
+  else (No)
+    :Receive AI-generated reading;
+    :Display reading to User;
+
+    if (User wants to share reading?) then (Yes)
+      :Share Reading on Social Media;
+    else (No)
+      :Do Nothing;
+    endif
+  endif
+
+else (No)
+  :Prompt User to re-enter intention;
+endif
+
+stop
+@enduml

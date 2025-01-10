@@ -1,0 +1,79 @@
+@startuml
+
+title "Tarot Reading System: Complete Use Case Diagram"
+
+' -- ACTORS --
+actor "Tarot Seeker" as Seeker
+actor "System Admin / DevOps" as Admin
+actor "Data Scientist / ML Engineer" as DS
+actor "Orchestration System" as Orchestrator
+actor "Social Media Sources" as Social
+actor "Code Repository (Git)" as GitRepo
+
+' -- TAROT READING APP BOUNDARY --
+rectangle "Tarot Reading App" {
+  usecase "UC1: Set Intention" as UC1
+  usecase "UC2: Generate Tarot Spread" as UC2
+  usecase "UC3: Get AI Reading" as UC3
+  usecase "UC4: Display Reading" as UC4
+  usecase "UC5: Share Reading" as UC5
+}
+
+' -- MLOps PLATFORM BOUNDARY --
+rectangle "MLOps Platform" {
+  usecase "UC6: Configure Orchestration\n& CI/CD Pipelines" as UC6
+  usecase "UC7: Automated Data Ingestion\n(API Calls, DB Writes)" as UC7
+  usecase "UC8: Preprocess & Label Data\n(Transform, Filter, Tag)" as UC8
+  usecase "UC9: Train / Fine-Tune Model\n(Compute Cluster or Cloud)" as UC9
+  usecase "UC10: Validate & Test Model\n(Metrics, QA, Canary)" as UC10
+  usecase "UC11: Deploy Model\n(Prod Serving, Container, etc.)" as UC11
+  usecase "UC12: Monitor & Gather Feedback\n(Logs, Telemetry, Retraining Trigger)" as UC12
+  usecase "UC13: CI/CD for Pipeline Changes\n(Build, Test, Deploy MLOps Code)" as UC13
+}
+
+' -- DATA INGESTION INTERFACE BOUNDARY --
+rectangle "Data Ingestion Interface" as DataIngest {
+  usecase "UC7.1: Connect to Social Media APIs" as UC7_1
+  usecase "UC7.2: Pull & Store Fresh Posts" as UC7_2
+}
+
+'
+' RELATIONSHIPS (Tarot Reading App)
+'
+Seeker --> UC1 : "Enter question/intent"
+UC1 --> UC2 : "Trigger spread generation"
+UC2 --> UC3 : "Call AI Model"
+UC3 --> UC4 : "Generate & show reading"
+Seeker --> UC5 : "Share reading to social platforms"
+
+'
+' RELATIONSHIPS (MLOps Platform)
+'
+Admin --> UC6 : "Define pipeline schedule,\nenv vars, secrets, triggers"
+Orchestrator --> UC7 : "Trigger ingestion on schedule"
+UC7 --> DataIngest : "Execute data pulling"
+
+' Inside Data Ingestion Interface
+DataIngest --> UC7_1 : "API connections"
+DataIngest --> UC7_2 : "Pull, filter, store posts"
+
+' Continuing pipeline steps
+Orchestrator --> UC8 : "Run data prep scripts\n(ETL jobs)"
+Orchestrator --> UC9 : "Start training/fine-tuning\non compute cluster"
+Orchestrator --> UC10: "Evaluate results,\nrun tests"
+Orchestrator --> UC11: "Deploy model to\nproduction environment"
+Orchestrator --> UC12: "Collect logs, metrics,\nfeedback & drift detection"
+
+'
+' CI/CD Integration
+'
+DS --> UC13 : "Push code/pipeline changes\nto repository"
+GitRepo --> UC13 : "Versioned code,\nDockerfiles, pipeline scripts"
+Orchestrator --> UC13 : "Build & test new pipeline code\n(automated CI),\nthen deploy pipeline updates"
+
+'
+' SOCIAL MEDIA SOURCES FEED INTO DATA INGEST
+'
+Social --> UC7_1 : "Provide new social media posts"
+
+@enduml

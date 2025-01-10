@@ -1,0 +1,131 @@
+@startuml
+
+title "Tarot Reading App with RAG & Prompt Engineering"
+
+' -- INTERFACES --
+
+interface IReadingService {
+  + fetchReading(finalPrompt: string): string
+}
+
+interface IRAGService {
+  + retrieveContext(userIntention: string): List<String>
+}
+
+' -- RAG & PROMPT ENGINEERING --
+
+class RAGServiceImpl {
+  + retrieveContext(userIntention: string): List<String>
+}
+
+class PromptEngineeringService {
+  - toneStyler: ToneStyler
+  - ragService: IRAGService
+  + buildPrompt(userIntention: string, spread: Spread): string
+}
+
+class ToneStyler {
+  + applyTone(baseText: string, toneType: string): string
+}
+
+' -- CONCRETE IMPLEMENTATIONS OF READING SERVICE --
+
+class LocalOllamaReadingService {
+  - localEndpoint: string
+  + fetchReading(finalPrompt: string): string
+}
+
+class RemoteChatbotReadingService {
+  - apiEndpoint: string
+  - apiKey: string
+  + fetchReading(finalPrompt: string): string
+}
+
+class InBrowserLLMReadingService {
+  - wasmModel: object
+  + fetchReading(finalPrompt: string): string
+}
+
+' ReadingServiceFactory: decides which IReadingService to create
+class ReadingServiceFactory {
+  + createReadingService(type: string): IReadingService
+}
+
+' -- CORE APP CLASSES --
+
+class TarotApp {
+  +initialize(): void
+  +run(): void
+}
+
+class UserInput {
+  +captureIntention(): string
+  +validateInput(input: string): boolean
+}
+
+class Card {
+  -name: string
+  -description: string
+  -position: string
+  +getCardInfo(): string
+}
+
+class Spread {
+  -cards: List<Card>
+  +generateSpread(type: string): void
+  +getSpreadInfo(): List<Card>
+}
+
+class CardSpreadGenerator {
+  +generate(type: string): Spread
+}
+
+'
+' AIReaderController: Now it depends on PromptEngineeringService + IReadingService
+'
+class AIReaderController {
+  - readingService: IReadingService
+  - promptEngineering: PromptEngineeringService
+  + setReadingService(service: IReadingService): void
+  + fetchReading(userIntention: string, spread: Spread, toneType: string): string
+}
+
+class TarotDisplay {
+  +showSpread(spread: Spread): void
+  +showReading(reading: string): void
+}
+
+class ShareFeature {
+  +shareToSocialMedia(platform: string, reading: string): void
+}
+
+' -- RELATIONSHIPS --
+
+' Reading Services implement IReadingService
+IReadingService <|.. LocalOllamaReadingService
+IReadingService <|.. RemoteChatbotReadingService
+IReadingService <|.. InBrowserLLMReadingService
+
+' RAG service
+IRAGService <|.. RAGServiceImpl
+
+' Factory creates whichever reading service is needed
+ReadingServiceFactory --> IReadingService : "creates"
+
+' AIReaderController uses both the reading service and prompt engineering
+AIReaderController --> IReadingService : "strategy"
+AIReaderController --> PromptEngineeringService : "builds final prompt"
+
+PromptEngineeringService --> IRAGService : "retrieves context"
+PromptEngineeringService --> ToneStyler : "applies comedic style"
+
+TarotApp --> UserInput : "uses"
+TarotApp --> CardSpreadGenerator : "uses"
+TarotApp --> AIReaderController : "uses"
+TarotApp --> TarotDisplay : "uses"
+TarotApp --> ShareFeature : "uses"
+
+CardSpreadGenerator --> Spread : "creates"
+Spread --> Card : "contains"
+
+@enduml

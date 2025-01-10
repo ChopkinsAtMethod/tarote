@@ -1,0 +1,78 @@
+@startuml
+title "User Getting a Tarot Reading (Asynchronous Sequence Diagram)"
+
+actor User as U
+
+participant "TarotApp" as TA
+participant "UserInput" as UI
+participant "CardSpreadGenerator" as CSG
+participant "AIReaderController" as ARC
+participant "PromptEngineeringService" as PES
+participant "RAGServiceImpl" as RAG
+participant "ToneStyler" as TS
+participant "IReadingService (Concrete)" as RS
+
+U -> TA: Launch App (run)
+note right of TA
+  TarotApp initializes \n
+  and sets up services
+end note
+
+U ->> UI: Enter Intention ("Will AI kill our jobs?")
+UI -> TA: Return validated intention
+note left of UI
+  e.g. "Will AI kill our jobs?"
+  or "Should I pivot careers?"
+end note
+
+TA ->> CSG: Generate Spread (e.g. PastPresentFuture)
+CSG --> TA: Return Spread object
+
+TA ->> ARC: Request Reading \n(intention, spread, tone="LinkedInGuru")
+note right of ARC
+  AIReaderController orchestrates \n
+  prompt building & model call
+end note
+
+' Build the prompt asynchronously
+ARC ->> PES: buildPrompt(intention, spread)
+activate PES
+note right of PES
+  1) retrieveContext from RAG \n
+  2) combine with user intention + spread \n
+  3) apply comedic style
+end note
+
+PES ->> RAG: retrieveContext(userIntention)
+activate RAG
+RAG --> PES: Return social media snippets
+destroy RAG
+
+PES ->> TS: applyTone(combinedText, "LinkedInGuru")
+activate TS
+TS --> PES: Return comedic/toned text
+destroy TS
+
+PES --> ARC: finalPrompt
+destroy PES
+
+' Now fetch reading from AI, also async
+ARC ->> RS: fetchReading(finalPrompt)
+activate RS
+RS --> ARC: Return AI-generated text (reading)
+destroy RS
+
+ARC --> TA: Return reading text
+
+TA ->> U: Display Reading (UI/TarotDisplay)
+note left of U
+  User sees comedic \n
+  "LinkedIn influencer" style reading
+end note
+
+U ->> TA: (Optional) Share Reading
+note right of U
+  e.g. Share via Twitter, LinkedIn, etc.
+end note
+
+@enduml
