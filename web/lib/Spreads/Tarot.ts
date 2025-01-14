@@ -1,13 +1,6 @@
-import {
-    Deck,
-    Spread,
-    SpreadLayout,
-    ISpread,
-    DrawnCard,
-    Card,
-} from "./types";
+import { Deck, Spread, SpreadLayout, ISpread, DrawnCard, Card } from "../types";
 
-// Define common spread layouts
+// Define tarot spread layouts
 export const pastPresentFutureLayout: SpreadLayout = {
     type: "PastPresentFuture",
     positions: ["past", "present", "future"],
@@ -29,7 +22,7 @@ export const celticCrossLayout: SpreadLayout = {
     ],
 };
 
-// Base class for spreads
+// Base class for tarot spreads
 export class TarotSpread implements ISpread {
     layout: SpreadLayout;
 
@@ -38,13 +31,9 @@ export class TarotSpread implements ISpread {
     }
 
     draw(deck: Deck): Spread {
-        // Shuffle deck
-        const shuffledCards: Card[] = [...deck.cards].sort(() => Math.random() - 0.5);
+        const shuffledDeck: Card[] = [...deck.cards].sort(() => Math.random() - 0.5);
+        const drawnCards = shuffledDeck.slice(0, this.layout.positions.length);
 
-        // Draw cards based on layout positions
-        const drawnCards = shuffledCards.slice(0, this.layout.positions.length);
-
-        // Assign position and orientation
         const cardsWithAttributes: DrawnCard[] = drawnCards.map((card, index) => ({
             ...card,
             position: this.layout.positions[index],
@@ -58,23 +47,11 @@ export class TarotSpread implements ISpread {
     }
 }
 
-// Specialized class for Celtic Cross
-export class CelticCrossSpread extends TarotSpread {
-    constructor() {
-        super(celticCrossLayout);
-    }
-
-    // You could override `draw` here if Celtic Cross needed additional custom behavior
-    draw(deck: Deck): Spread {
-        return super.draw(deck);
-    }
-}
-
-// Factory methods for creating spreads
+// Factory methods for tarot spreads
 export function createPastPresentFutureSpread(): TarotSpread {
     return new TarotSpread(pastPresentFutureLayout);
 }
 
-export function createCelticCrossSpread(): CelticCrossSpread {
-    return new CelticCrossSpread();
+export function createCelticCrossSpread(): TarotSpread {
+    return new TarotSpread(celticCrossLayout);
 }

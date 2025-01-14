@@ -1,34 +1,39 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
-import { UserInputProps } from "../../lib/types";
+import { UserInputProps } from "../../lib/types"; // Updated relative path
 
-const UserInput: React.FC<UserInputProps> = ({ onSubmit }) => {
-  const [inputValue, setInputValue] = useState<string>("");
+const UserInput: React.FC<UserInputProps> = ({
+  onSubmit,
+  placeholder = "Enter your intention...", // Default placeholder
+  defaultValue = "",                       // Default value (optional)
+  validateInput,                           // Optional validation
+}) => {
+  const [input, setInput] = useState<string>(defaultValue);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim()) {
-      onSubmit(inputValue.trim());
-      setInputValue("");
+    if (!input.trim()) return; // Ensure input is not empty
+    if (validateInput && !validateInput(input.trim())) {
+      alert("Invalid input. Please try again.");
+      return;
     }
+    onSubmit(input.trim());
+    setInput(""); // Clear input after submission
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-start">
-      <label htmlFor="intention" className="mb-2">
-        Enter Your Intention:
-      </label>
+    <form onSubmit={handleSubmit} className="mb-4 w-full max-w-md">
       <input
-        id="intention"
         type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        className="border p-2 rounded w-full"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder={placeholder}
+        className="w-full p-2 border border-gray-300 rounded mb-2"
       />
       <button
         type="submit"
-        className="mt-2 bg-blue-500 text-white py-2 px-4 rounded"
+        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
       >
         Submit
       </button>
