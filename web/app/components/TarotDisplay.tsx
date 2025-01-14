@@ -1,17 +1,54 @@
-import React from "react";
-import { TarotDisplayProps } from "../../lib/types";
+"use client";
 
-const TarotDisplay: React.FC<TarotDisplayProps> = ({ spread, intention }) => {
+import React from "react";
+import { Spread, RenderedSpread, ISpreadRenderer } from "../../lib/types";
+
+interface TarotDisplayProps {
+  spread: Spread;
+  intention: string;
+  renderer: ISpreadRenderer; // Accept any renderer dynamically
+}
+
+const TarotDisplay: React.FC<TarotDisplayProps> = ({ spread, intention, renderer }) => {
+  const renderedSpread: RenderedSpread = renderer.renderSpread(spread);
+
   return (
     <section className="mt-6">
       <h2 className="text-xl font-bold">Your Tarot Spread</h2>
       <p className="text-gray-700 mb-4">Intention: {intention}</p>
-      <div className="grid gap-4">
-        {spread.cards.map((card, index) => (
-          <div key={index} className="border rounded p-4 shadow">
-            <h3 className="text-lg font-semibold">{card.name}</h3>
-            <p className="text-gray-500">Position: {card.position}</p>
-            <p>{card.description}</p>
+      <div
+        className="relative"
+        style={{
+          width: "600px",
+          height: "600px",
+          position: "relative",
+        }}
+      >
+        {renderedSpread.map((placement, index) => (
+          <div
+            key={index}
+            style={{
+              position: "absolute",
+              left: `${placement.x}px`,
+              top: `${placement.y}px`,
+              zIndex: placement.z ?? 1,
+              transform: placement.rotation ? `rotate(${placement.rotation}deg)` : undefined,
+              width: "120px",
+              height: "180px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
+              backgroundColor: "#fff",
+              padding: "8px",
+              textAlign: "center",
+              fontSize: "14px",
+              overflow: "hidden",
+            }}
+          >
+            <p className="font-bold">{spread.cards[index].name}</p>
+            <p className="text-sm">{spread.cards[index].description}</p>
+            <p className="text-xs text-gray-500">
+              {spread.cards[index].position} - {spread.cards[index].orientation}
+            </p>
           </div>
         ))}
       </div>

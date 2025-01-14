@@ -1,12 +1,11 @@
 @startuml
-title "Full Tarot Reading System: Domain, AI/RAG, and UI Rendering"
+title "Tarot Reading System with AI/RAG Integration"
 
 ' ------------------- DOMAIN LAYER -------------------
 
 class Card {
   - name: string
   - description: string
-  ' orientation & position assigned only when drawn
 }
 
 class Deck {
@@ -32,7 +31,6 @@ class TarotSpread implements ISpread {
 class Spread {
   - layout: SpreadLayout
   - cards: List<DrawnCard>
-  ' (DrawnCard = Card + assigned orientation/position)
 }
 
 ' ------------------- AI & RAG LAYER -------------------
@@ -82,7 +80,6 @@ class ToneStyler {
 class AIReaderController {
   - readingService: IReadingService
   - promptEngineering: PromptEngineeringService
-  + setReadingService(service: IReadingService): void
   + fetchReading(userIntention: string, spread: Spread, toneType: string): string
 }
 
@@ -92,11 +89,7 @@ interface ISpreadRenderer {
   + renderSpread(spread: Spread): RenderedSpread
 }
 
-class CelticCrossRenderer implements ISpreadRenderer {
-  + renderSpread(spread: Spread): RenderedSpread
-}
-
-class PastPresentFutureRenderer implements ISpreadRenderer {
+class SpreadLayoutRenderer implements ISpreadRenderer {
   + renderSpread(spread: Spread): RenderedSpread
 }
 
@@ -109,7 +102,7 @@ class CardPlacement <<datatype>> {
 }
 
 class RenderedSpread <<datatype>> {
-  ' This can be an array of CardPlacement or a ReactElement tree
+  ' Contains CardPlacement for visual rendering
 }
 
 class TarotDisplay {
@@ -136,8 +129,8 @@ class TarotApp {
 ' Domain
 ISpread <|.. TarotSpread
 TarotSpread --> SpreadLayout : "uses"
-TarotSpread --> Spread : "produces/draws"
-Spread --> Card : "composed of"
+TarotSpread --> Spread : "produces"
+Spread --> Card : "contains"
 Deck --> Card : "contains"
 
 ' AI & RAG
@@ -152,17 +145,21 @@ PromptEngineeringService --> ToneStyler : "applies comedic style"
 AIReaderController --> IReadingService : "strategy"
 AIReaderController --> PromptEngineeringService : "builds final prompt"
 
-' UI & Rendering
-ISpreadRenderer <|.. CelticCrossRenderer
-ISpreadRenderer <|.. PastPresentFutureRenderer
+' Rendering
+ISpreadRenderer <|.. SpreadLayoutRenderer
 ISpreadRenderer --> RenderedSpread : "produces"
-RenderedSpread --> CardPlacement : "consists of"
-TarotDisplay --> ISpreadRenderer : "invokes"
-TarotDisplay --> Spread : "displays domain object"
-TarotDisplay --> AIReaderController : "optionally uses to fetch reading"
-UserInput --> TarotApp
+RenderedSpread --> CardPlacement : "composed of"
+TarotDisplay --> ISpreadRenderer : "uses"
+TarotDisplay --> Spread : "displays"
+
+' Connections between layers
+UserInput --> TarotApp : "captures intention"
+TarotApp --> TarotSpread : "creates"
+TarotApp --> AIReaderController : "uses to fetch reading"
+TarotApp --> TarotDisplay : "sends spread and reading"
+AIReaderController --> Spread : "inputs spread"
+TarotDisplay --> Spread : "renders spread"
+TarotDisplay --> AIReaderController : "retrieves response"
 ShareFeature --> TarotApp
-TarotApp --> Deck
-TarotApp --> Spread
 
 @enduml

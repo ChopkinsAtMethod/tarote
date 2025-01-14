@@ -1,48 +1,84 @@
-// Represents a tarot card with no assigned position/orientation yet.
+// --- DOMAIN TYPES ---
+
+// Represents a single card or rune, without assigned position or orientation
 export interface Card {
-  name: string;
-  description: string;
-  position?: "past" | "present" | "future"; // optional until drawn
-  orientation?: "upright" | "reversed";    // optional until drawn
+  name: string;        // Name of the card
+  description: string; // Description or meaning of the card
 }
 
-// Represents a tarot deck containing neutral (undrawn) cards.
-export interface Deck {
-  name: string;
-  description: string;
-  cards: Card[];
-}
-
-// Represents the layout for a spread (e.g., which positions exist).
-export interface SpreadLayout {
-  type: string;           // e.g. "PastPresentFuture"
-  positions: string[];    // e.g. ["past", "present", "future"]
-}
-
-// Represents a fully drawn card with assigned position and orientation.
+// Represents a drawn card with position and orientation assigned
 export type DrawnCard = Card & {
-  position: "past" | "present" | "future";
-  orientation: "upright" | "reversed";
+  position: string;                      // Assigned position in the spread
+  orientation?: "upright" | "reversed"; // Orientation (specific to tarot)
 };
 
-// Represents a completed spread: layout + drawn cards.
+// Represents a deck containing cards or items
+export interface Deck {
+  name: string;        // Name of the deck
+  description: string; // Description of the deck or its theme
+  cards: Card[];       // Array of cards in the deck
+}
+
+// Represents a layout for a spread
+export interface SpreadLayout {
+  type: string;         // Type of the spread, e.g., "CelticCross"
+  positions: string[];  // Logical positions, e.g., ["past", "present", "future"]
+}
+
+// Represents a completed spread with drawn cards
 export interface Spread {
-  layout: SpreadLayout;
-  cards: DrawnCard[];
+  layout: SpreadLayout; // Layout used for the spread
+  cards: DrawnCard[];   // Cards drawn for this spread
 }
 
-// An interface for any class/object that can draw a Spread from a Deck.
+// Interface for generating spreads
 export interface ISpread {
-  draw(deck: Deck): Spread;
+  draw(deck: Deck): Spread; // Generates a spread based on the deck and layout
 }
 
-// Props for the TarotDisplay component
-export interface TarotDisplayProps {
-  spread: Spread;
-  intention: string;
+// --- AI & RAG TYPES ---
+
+// Represents an AI reading service
+export interface IReadingService {
+  fetchReading(finalPrompt: string): Promise<string>; // Generates a reading from a prompt
 }
 
-// Props for the UserInput component
+// Represents a retrieval-augmented generation (RAG) service
+export interface IRAGService {
+  retrieveContext(userIntention: string): Promise<string[]>; // Retrieves external context
+}
+
+// Represents a service for building prompts
+export interface IPromptEngineeringService {
+  buildPrompt(
+    userIntention: string,
+    spread: Spread,
+    toneType?: string
+  ): string; // Builds the final prompt for the AI
+}
+
+// --- UI RENDERING TYPES ---
+
+// Represents a single card's placement in the UI
+export interface CardPlacement {
+  layoutPosition: string; // Position name from the spread layout
+  x: number;              // X-coordinate for positioning
+  y: number;              // Y-coordinate for positioning
+  z?: number;             // Optional stacking order (z-index)
+  rotation?: number;      // Optional rotation angle (degrees or radians)
+}
+
+// Represents the fully rendered spread for UI purposes
+export type RenderedSpread = CardPlacement[];
+
+// Interface for rendering a spread into UI-ready data
+export interface ISpreadRenderer {
+  renderSpread(spread: Spread): RenderedSpread; // Converts a spread into UI placements
+}
+
 export interface UserInputProps {
-  onSubmit: (intention: string) => void;
+  onSubmit: (intention: string) => void;   // Callback for handling user submission
+  placeholder?: string;                   // Optional custom placeholder text
+  defaultValue?: string;                  // Optional default value for the input
+  validateInput?: (input: string) => boolean; // Optional validation function for the input
 }

@@ -1,5 +1,6 @@
 import { Deck, Card } from "./types";
 
+// Default tarot cards (major arcana)
 const defaultCards: Card[] = [
     { name: "The Fool", description: "New beginnings, fresh starts." },
     { name: "The Magician", description: "Manifestation, resourcefulness." },
@@ -23,7 +24,7 @@ const defaultCards: Card[] = [
     { name: "The World", description: "Completion, accomplishment, fulfillment." },
 ];
 
-// Default deck
+// Default tarot deck
 export const defaultDeck: Deck = {
     name: "Default Tarot Deck",
     description: "A classic tarot deck containing 22 major arcana cards.",
