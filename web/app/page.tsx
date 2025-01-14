@@ -1,11 +1,11 @@
-// Purpose: This file contains the main page component for the web application.
 "use client";
 
 import React, { useState } from "react";
 import UserInput from "./components/UserInput";
 import TarotDisplay from "./components/TarotDisplay";
 import { Spread } from "../lib/types";
-import { generateSpread } from "../lib/CardSpreadGenerator";
+import { createPastPresentFutureSpread } from "../lib/Spreads";
+import { defaultDeck } from "../lib/TarotDecks";
 
 export default function Home() {
   const [intention, setIntention] = useState<string>("");
@@ -13,7 +13,8 @@ export default function Home() {
 
   const handleSetIntention = (userIntention: string) => {
     setIntention(userIntention);
-    const generatedSpread = generateSpread("PastPresentFuture");
+    const spreadClass = createPastPresentFutureSpread(); // A TarotSpread instance
+    const generatedSpread = spreadClass.draw(defaultDeck);
     setSpread(generatedSpread);
   };
 
