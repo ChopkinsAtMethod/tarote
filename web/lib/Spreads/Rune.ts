@@ -1,4 +1,5 @@
-import { Deck, Spread, SpreadLayout, ISpread } from "../types";
+import { Card, SpreadLayout, Spread, Deck } from "@lib/types";
+import { ISpread } from "@lib/interfaces";
 
 // Define rune-specific spread layouts
 export const threeRuneLayout: SpreadLayout = {
@@ -7,7 +8,7 @@ export const threeRuneLayout: SpreadLayout = {
 };
 
 // Base class for rune spreads
-export class RuneSpread implements ISpread {
+export class RuneSpread implements ISpread<Card> {
     layout: SpreadLayout;
 
     constructor(layout: SpreadLayout) {

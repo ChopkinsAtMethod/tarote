@@ -30,3 +30,38 @@ export const defaultDeck: Deck = {
     description: "A classic tarot deck containing 22 major arcana cards.",
     cards: defaultCards,
 };
+
+// Define the 24 Elder Futhark runes
+const runeCards: Card[] = [
+    { name: "Fehu", description: "Wealth, prosperity, abundance." },
+    { name: "Uruz", description: "Strength, endurance, physical health." },
+    { name: "Thurisaz", description: "Protection, challenges, defense." },
+    { name: "Ansuz", description: "Communication, wisdom, inspiration." },
+    { name: "Raidho", description: "Journey, movement, travel." },
+    { name: "Kenaz", description: "Knowledge, illumination, creativity." },
+    { name: "Gebo", description: "Gift, generosity, balance in relationships." },
+    { name: "Wunjo", description: "Joy, harmony, success." },
+    { name: "Hagalaz", description: "Disruption, transformation, trial." },
+    { name: "Nauthiz", description: "Need, hardship, resistance." },
+    { name: "Isa", description: "Stillness, pause, patience." },
+    { name: "Jera", description: "Harvest, reward for effort, cycles." },
+    { name: "Eihwaz", description: "Strength, endurance, protection." },
+    { name: "Perthro", description: "Mystery, fate, secrets." },
+    { name: "Algiz", description: "Protection, spirituality, connection to higher powers." },
+    { name: "Sowilo", description: "Success, vitality, wholeness." },
+    { name: "Tiwaz", description: "Honor, justice, leadership." },
+    { name: "Berkano", description: "Growth, fertility, renewal." },
+    { name: "Ehwaz", description: "Teamwork, trust, movement." },
+    { name: "Mannaz", description: "The self, human interaction, society." },
+    { name: "Laguz", description: "Intuition, flow, emotions." },
+    { name: "Ingwaz", description: "Fertility, gestation, internal growth." },
+    { name: "Dagaz", description: "Breakthrough, transformation, awakening." },
+    { name: "Othala", description: "Heritage, home, legacy." },
+];
+
+// Create the rune deck
+export const runeDeck: Deck = {
+    name: "Rune Deck",
+    description: "A deck based on the 24 Elder Futhark runes used for divination and guidance.",
+    cards: runeCards,
+};

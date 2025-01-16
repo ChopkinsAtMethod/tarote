@@ -1,4 +1,5 @@
-import { Deck, Spread, SpreadLayout, ISpread, DrawnCard, Card } from "../types";
+import { Deck, Spread, SpreadLayout, DrawnCard, Card } from "@lib/types";
+import { ISpread } from "@lib/interfaces";
 
 // Define tarot spread layouts
 export const pastPresentFutureLayout: SpreadLayout = {
@@ -23,7 +24,7 @@ export const celticCrossLayout: SpreadLayout = {
 };
 
 // Base class for tarot spreads
-export class TarotSpread implements ISpread {
+export class TarotSpread implements ISpread<Card> {
     layout: SpreadLayout;
 
     constructor(layout: SpreadLayout) {

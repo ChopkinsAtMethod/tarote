@@ -1,6 +1,7 @@
-import { ISpreadRenderer, Spread, RenderedSpread } from "../types";
+import { Spread, RenderedSpread } from "../types";
+import { ISpreadRenderer } from "@lib/interfaces";
 
-export class CelticCrossRenderer implements ISpreadRenderer {
+export class CelticCrossRenderer implements ISpreadRenderer<Spread, RenderedSpread> {
     renderSpread(spread: Spread): RenderedSpread {
         if (spread.layout.type !== "CelticCross") {
             console.warn("CelticCrossRenderer received a non-CelticCross spread."); // Log a warning
