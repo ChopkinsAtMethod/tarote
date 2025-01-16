@@ -1,6 +1,6 @@
-# **AI Tarot Reading App**
+# **Tarote (working name)**
 
-Welcome to the **AI Tarot Reading App**, a modern tool that combines the mystical world of Tarot with the cutting-edge capabilities of AI to generate insightful, dynamic, and humorous readings.
+Welcome to the **AI Tarot Reading App**, an app that combines the mystical world of Tarot with the cutting-edge capabilities of AI to generate insightful, dynamic, and (hopefully) fun readings.
 
 ---
 
@@ -11,9 +11,6 @@ Welcome to the **AI Tarot Reading App**, a modern tool that combines the mystica
   - **Celtic Cross**
 - **AI-Generated Readings**: Input your intention, and let the AI interpret your spread in a chosen tone.
 - **Streamed Responses**: See the AI's interpretation appear in real-time as it generates the reading.
-- **Interactive Controls**:
-  - Clear the reading output at any time.
-  - Seamlessly switch spreads or reset your intention.
 
 ---
 
@@ -23,19 +20,19 @@ Welcome to the **AI Tarot Reading App**, a modern tool that combines the mystica
 2. **Select a Spread**: Choose the type of spread to use for your Tarot cards.
 3. **Generate a Spread**: Cards are drawn randomly from a predefined deck and displayed.
 4. **Get an AI Reading**: The AI analyzes the spread and provides an interpretation, streamed in real-time.
-5. **Clear Output**: Start fresh with a click of a button.
 
 ---
 
 ## **Tech Stack**
 
-- **Frontend**: [Next.js 15+](https://nextjs.org/)
+- **Frontend**: [Next.js 15](https://nextjs.org/)
   - **TypeScript** for type safety
   - **React** for state management
 - **Backend**:
   - **Ollama API** for AI-powered text generation
+  - **Extension** other backend services to expand feature set
   - **Custom Proxy** using Next.js API routes
-- **Design**: Tailwind CSS for a clean, modern UI.
+- **Design**: Tailwind CSS for a clean, modern UI, placeholding
 
 ---
 
