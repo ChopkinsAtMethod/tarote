@@ -1,13 +1,15 @@
-"use client"; 
+"use client";
 
 import React, { useState } from "react";
 import UserInput from "../app/components/UserInput";
 import TarotDisplay from "../app/components/TarotDisplay";
+import StreamedReading from "./components/StreamReading";
 import { Spread } from "../lib/types";
 import { createPastPresentFutureSpread, createCelticCrossSpread } from "../lib/Spreads/Tarot";
 import { SpreadLayoutRenderer } from "../lib/renderers/SpreadLayoutRenderer";
 import { CelticCrossRenderer } from "../lib/renderers/CelticCrossRenderer";
 import { defaultDeck } from "../lib/Decks";
+import { aiReaderController } from "../lib/AI/AIService";
 
 export default function Home() {
   const [intention, setIntention] = useState<string>("");
@@ -15,9 +17,14 @@ export default function Home() {
   const [renderer, setRenderer] = useState<"SpreadLayoutRenderer" | "CelticCrossRenderer">(
     "SpreadLayoutRenderer"
   );
+  const [stream, setStream] = useState<ReadableStream<Uint8Array> | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSetIntention = (userIntention: string) => {
     setIntention(userIntention);
+    setStream(null);
+    setError(null);
   };
 
   const handleGenerateSpread = () => {
@@ -27,11 +34,35 @@ export default function Home() {
         : createCelticCrossSpread();
     const generatedSpread = spreadClass.draw(defaultDeck);
     setSpread(generatedSpread);
+    setStream(null);
+    setError(null);
   };
 
   const handleRendererChange = (selectedRenderer: "SpreadLayoutRenderer" | "CelticCrossRenderer") => {
     setRenderer(selectedRenderer);
-    setSpread(null); // Clear the spread when switching the renderer
+    setSpread(null);
+    setStream(null);
+    setError(null);
+  };
+
+  const handleFetchAIReading = async () => {
+    if (!spread || !intention) {
+      alert("Please generate a spread and set an intention first.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const stream = await aiReaderController.fetchAIReading(intention, spread, "humorous");
+      setStream(stream);
+    } catch (err) {
+      console.error("Failed to fetch AI reading:", err);
+      setError("Error fetching AI reading. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getRendererInstance = () => {
@@ -73,12 +104,21 @@ export default function Home() {
         </button>
       </div>
       {spread && (
-        <TarotDisplay
-          spread={spread}
-          intention={intention}
-          renderer={getRendererInstance()} // Pass the dynamically selected renderer
-        />
+        <>
+          <TarotDisplay spread={spread} intention={intention} renderer={getRendererInstance()} />
+          <div className="mt-4">
+            <button
+              onClick={handleFetchAIReading}
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+              disabled={loading}
+            >
+              {loading ? "Generating Reading..." : "Get AI Reading"}
+            </button>
+            {error && <p className="text-red-500 mt-4">{error}</p>}
+          </div>
+        </>
       )}
+      {stream && <StreamedReading stream={stream} loading={loading} />}
     </main>
   );
 }

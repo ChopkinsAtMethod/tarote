@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { UserInputProps } from "../../lib/types"; // Updated relative path
+import { UserInputProps } from "@lib/types"; // Updated relative path
 
 const UserInput: React.FC<UserInputProps> = ({
   onSubmit,

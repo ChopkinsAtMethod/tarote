@@ -1,15 +1,10 @@
 "use client";
 
 import React from "react";
-import { Spread, RenderedSpread, ISpreadRenderer } from "../../lib/types";
+import { Spread, RenderedSpread } from "@lib/types";
+import { ITarotDisplayProps } from "@lib/interfaces";
 
-interface TarotDisplayProps {
-  spread: Spread;
-  intention: string;
-  renderer: ISpreadRenderer; // Accept any renderer dynamically
-}
-
-const TarotDisplay: React.FC<TarotDisplayProps> = ({ spread, intention, renderer }) => {
+const TarotDisplay: React.FC<ITarotDisplayProps<Spread, RenderedSpread>> = ({ spread, intention, renderer }) => {
   const renderedSpread: RenderedSpread = renderer.renderSpread(spread);
 
   return (
