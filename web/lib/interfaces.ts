@@ -49,7 +49,7 @@ export interface IReadingService<TConfig> {
      * Configure the reading service with necessary settings.
      * @param config - Configuration specific to the service.
      */
-    configure(config: TConfig): void;
+    configure(config?: TConfig): void;
 }
 
 /** Interface for defining a RAG service (retrieving context from external sources) */

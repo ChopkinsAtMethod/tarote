@@ -1,13 +1,14 @@
 import { Deck, Spread, SpreadLayout, DrawnCard, Card } from "@lib/types";
 import { ISpread } from "@lib/interfaces";
+import { OrientationStrategy } from "./OrientationStrategy";
 
 // Define tarot spread layouts
-export const pastPresentFutureLayout: SpreadLayout = {
+const pastPresentFutureLayout: SpreadLayout = {
     type: "PastPresentFuture",
     positions: ["past", "present", "future"],
 };
 
-export const celticCrossLayout: SpreadLayout = {
+const celticCrossLayout: SpreadLayout = {
     type: "CelticCross",
     positions: [
         "significator",
@@ -24,11 +25,13 @@ export const celticCrossLayout: SpreadLayout = {
 };
 
 // Base class for tarot spreads
-export class TarotSpread implements ISpread<Card> {
+class TarotSpread implements ISpread<Card> {
     layout: SpreadLayout;
+    private readonly orientationStrategy: OrientationStrategy;
 
     constructor(layout: SpreadLayout) {
         this.layout = layout;
+        this.orientationStrategy = new OrientationStrategy();
     }
 
     draw(deck: Deck): Spread {
@@ -38,7 +41,7 @@ export class TarotSpread implements ISpread<Card> {
         const cardsWithAttributes: DrawnCard[] = drawnCards.map((card, index) => ({
             ...card,
             position: this.layout.positions[index],
-            orientation: Math.random() > 0.5 ? "upright" : "reversed",
+            orientation: this.orientationStrategy.orient(),
         }));
 
         return {
