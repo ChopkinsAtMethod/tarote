@@ -55,7 +55,7 @@ export default function Home() {
     setError(null);
 
     try {
-      const stream = await aiReaderController.fetchAIReading(intention, spread, "humorous");
+      const stream = await aiReaderController.fetchAIReading(intention, spread, "humorous, self-absorbed, aloof, endearing, oblivious");
       setStream(stream);
     } catch (err) {
       console.error("Failed to fetch AI reading:", err);

@@ -1,2 +1,3 @@
-export { threeRuneLayout, RuneSpread, createThreeRuneSpread } from "./Rune";
-export { pastPresentFutureLayout, celticCrossLayout, TarotSpread, createPastPresentFutureSpread, createCelticCrossSpread } from "./Tarot";
+export { createThreeRuneSpread } from "./Rune";
+export { createPastPresentFutureSpread, createCelticCrossSpread } from "./Tarot";
+export { OrientationStrategy } from "./OrientationStrategy";
