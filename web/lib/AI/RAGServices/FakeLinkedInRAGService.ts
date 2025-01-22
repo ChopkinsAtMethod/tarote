@@ -15,6 +15,10 @@ export class FakeLinkedInRAGService implements IRAGService {
             "The rate of change in tech is exponential. Blink, and you'll miss the future.",
             "In five years, half of today's jobs will be gone. What are you doing about it?",
             "We're not just automating tasks; we're automating entire industries. Adapt now.",
+            "The future of work is now. Are you ready to embrace the unknown?",
+            "The robots aren't coming; they're already here. Are you?",
+            "The future belongs to the adaptable. Are you ready to evolve?",
+            "The only job security is in your ability to learn, unlearn, and relearn.",
         ];
     }
 
@@ -25,7 +29,7 @@ export class FakeLinkedInRAGService implements IRAGService {
      */
     async retrieveContext(userIntention: string): Promise<string[]> {
         console.log("Retrieving context for RAG:", userIntention);
-        const selectedPosts = this.getRandomPosts(3); // Fetch 3 random posts
+        const selectedPosts = this.getRandomPosts(8); // Fetch 8 random posts
         console.log("Retrieved context for RAG:", selectedPosts);
         return selectedPosts;
     }

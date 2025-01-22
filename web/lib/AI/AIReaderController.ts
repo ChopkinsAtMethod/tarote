@@ -11,7 +11,7 @@ export class AIReaderController<TConfig> {
         ragService: IRAGService,
         readingService: IReadingService<TConfig>,
         promptService: IPromptEngineeringService<Spread>,
-        ragTimeoutMs: number = 5000 // Default timeout for RAG
+        ragTimeoutMs: number = 5000
     ) {
         this.ragService = ragService;
         this.readingService = readingService;
@@ -34,19 +34,23 @@ export class AIReaderController<TConfig> {
         let ragContext: string[] = [];
 
         try {
-            // Start RAG with a timeout
             const ragPromise = this.ragService.retrieveContext(userIntention);
-            const ragTimeout = new Promise<string[]>((_, reject) =>
-                setTimeout(() => reject(new Error("RAG timeout")), this.ragTimeoutMs)
+            const timeoutPromise = new Promise<string[]>((_, reject) =>
+                setTimeout(() => reject(new Error("RAG_TIMEOUT")), this.ragTimeoutMs)
             );
 
-            ragContext = await Promise.race([ragPromise, ragTimeout]);
+            ragContext = await Promise.race([ragPromise, timeoutPromise]);
         } catch (error) {
-            console.warn("RAG failed or timed out:", error);
+            if (error instanceof Error && error.message === "RAG_TIMEOUT") {
+                console.info("[RAG] Context retrieval timed out, proceeding without context");
+            } else {
+                console.warn("[RAG] Context retrieval encountered an issue, proceeding without context");
+            }
+            ragContext = [];
         }
 
         const initialPrompt = this.promptService.buildPrompt(userIntention, spread, ragContext, toneType);
-        console.log("Initial prompt:", initialPrompt);
+        console.debug("[Prompt] Generated:", initialPrompt);
         return this.readingService.fetchReadingStream(initialPrompt);
     }
 }
