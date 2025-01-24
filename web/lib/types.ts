@@ -62,3 +62,13 @@ export type UserInputProps = {
   defaultValue?: string;                  // Optional default value for the input
   validateInput?: (input: string) => boolean; // Optional validation function for the input
 };
+
+// --- TOKENIZATION TYPES ---
+
+/** Represents special tokens */
+export type SpecialTokens = {
+  readonly BOS: number;
+  readonly EOS: number;
+  readonly PAD: number;
+  readonly UNK: number;
+};

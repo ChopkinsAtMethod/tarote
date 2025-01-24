@@ -106,3 +106,42 @@ export interface IStreamedReadingProps {
     stream: ReadableStream<Uint8Array>;
     loading: boolean;
 }
+
+//
+// TOKENIZER INTERFACES
+//
+
+/** Interface for vocabulary management */
+export interface IVocabulary {
+    getTokenId(piece: string): number | undefined;
+    getTokenPiece(id: number): string | undefined;
+    size(): number;
+}
+
+/** Interface for special token management */
+export interface ISpecialTokens {
+    readonly bos_token_id: number;
+    readonly eos_token_id: number;
+    readonly pad_token_id: number;
+    readonly unk_token_id: number;
+    isSpecialToken(id: number): boolean;
+}
+
+/** Interface for token encoding */
+export interface ITokenEncoder {
+    encode(text: string): Promise<number[]>;
+}
+
+/** Interface for token decoding */
+export interface ITokenDecoder {
+    decode(tokens: number[]): Promise<string>;
+    decodeToken(token: number): Promise<string>;
+}
+
+/** Combined interface for full tokenizer capability */
+export interface ITokenizer extends ITokenEncoder, ITokenDecoder, ISpecialTokens { }
+
+/** Interface for tokenization strategies */
+export interface ITokenizationStrategy {
+    tokenize(text: string): string[];
+}
